@@ -1,6 +1,6 @@
 module.exports = {
   login: function(req, res, next) {
-    logger.info(`User ${username} attempting to login`);
+    logger.info(`User ${username} attempting to log in`);
     res.status(200);
   },
 

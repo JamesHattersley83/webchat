@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const user_auth = require("../controllers/user");
 
+console.log(user_auth.login);
+
 router.get("/", (req, res) => {
   res.status(200).send("Good request...");
 });

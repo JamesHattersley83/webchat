@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 // connect to db
 const dbURL = process.env.MONGO_DB_URL;
 
-const server = new Promise((resolve, reject) => {
+new Promise((resolve, reject) => {
   mongoose.connect(dbURL, { useNewUrlParser: true }, err => {
     if (err) {
       logger.error(`Error connecting to: ${dbURL}`);
@@ -22,6 +22,7 @@ const server = new Promise((resolve, reject) => {
 }).then(() => {
   app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}...`);
+    app.emit('app_started');
   });
 });
 
@@ -32,4 +33,4 @@ app.get('*', (req, res) => {
   res.status(404).send('Bad Request...');
 });
 
-module.exports = server;
+module.exports = app;

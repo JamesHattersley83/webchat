@@ -3,7 +3,13 @@ const logger = require('./logger');
 const express = require('express');
 const user = require('./routes/user');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
 const app = express();
+
+// init middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 5000;
 

@@ -44,7 +44,9 @@ module.exports = {
 
     user.save(error => {
       if (error) {
-        return res.status(500).logger.error(`Error has occured: ${error}`);
+        res.status(500);
+        logger.error(`Error has occured: ${error}`);
+        return;
       }
       res.status(201).send('User is successfully registered');
     });

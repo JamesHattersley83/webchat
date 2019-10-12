@@ -27,6 +27,12 @@ describe('user.js', () => {
         .send({ username: 'James', password: '123456' })
         .expect(201);
     });
+    it('Should pass a status of 400 if the username already exists', async () => {
+      await request(server)
+        .post('/user/')
+        .send({ username: 'James', password: '123456' })
+        .expect(400);
+    });
     it('Should pass a status of 400 when username and password does not match criteria', async () => {
       await request(server)
         .post('/user/')

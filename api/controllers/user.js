@@ -36,19 +36,28 @@ module.exports = {
       return;
     }
 
-    // save new user
-    user = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
+    const { username } = req.body;
 
-    user.save(error => {
-      if (error) {
-        res.status(500);
-        logger.error(`Error has occured: ${error}`);
-        return;
+    // check if username is already in db
+    User.findOne({ username }).then(user => {
+      if (user) {
+        res.status(400).send('Username already registered');
+      } else {
+        // save new user
+        user = new User({
+          username: req.body.username,
+          password: req.body.password
+        });
+
+        user.save(error => {
+          if (error) {
+            res.status(500);
+            logger.error(`Error has occured: ${error}`);
+            return;
+          }
+          res.status(201).send('User is successfully registered');
+        });
       }
-      res.status(201).send('User is successfully registered');
     });
   }
 };

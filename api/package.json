@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "set NODE_ENV=dev&& node main.js",
     "dev": "nodemon main.js",
-    "test": "find ./tests -name '*.test.js' | xargs mocha -R spec"
+    "test": "set NODE_ENV=test&& find ./tests -name '*.test.js' | xargs mocha -R spec"
   },
   "keywords": [],
   "author": "",

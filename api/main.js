@@ -1,4 +1,9 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+const path = require('path');
+require('dotenv').config({
+  path: path.resolve(__dirname, `./config/${process.env.NODE_ENV}.env`)
+});
+
 const logger = require('./logger');
 const express = require('express');
 const user = require('./routes/user');

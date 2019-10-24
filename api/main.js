@@ -22,14 +22,18 @@ const PORT = process.env.PORT || 5000;
 const dbURL = process.env.MONGO_DB_URL;
 
 new Promise((resolve, reject) => {
-  mongoose.connect(dbURL, { useNewUrlParser: true }, err => {
-    if (err) {
-      logger.error(`Error connecting to: ${dbURL}`);
-      return reject(err);
+  mongoose.connect(
+    dbURL,
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+    err => {
+      if (err) {
+        logger.error(`Error connecting to: ${dbURL}`);
+        return reject(err);
+      }
+      logger.info(`Connected to MongoDB database: ${dbURL}`);
+      return resolve();
     }
-    logger.info(`Connected to MongoDB database: ${dbURL}`);
-    return resolve();
-  });
+  );
 }).then(() => {
   app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}...`);

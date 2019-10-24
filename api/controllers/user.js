@@ -10,7 +10,7 @@ module.exports = {
     res.status(520).send({});
   },
 
-  register: function(req, res, next) {
+  register: async function(req, res, next) {
     // define validation schema
     const schema = Joi.object({
       // username is require, min 4 / max 8
@@ -32,32 +32,30 @@ module.exports = {
 
     if (result.error) {
       // 400 Bad Request
-      res.status(400).send(result.error.details[0].message);
-      return;
+      return res.status(400).send(result.error.details[0].message);
     }
 
-    const { username } = req.body;
+    const { username, password } = req.body;
 
-    // check if username is already in db
-    User.findOne({ username }).then(user => {
+    try {
+      // check if username is already in db
+      let user = await User.findOne({ username });
+
       if (user) {
-        res.status(400).send('Username already registered');
-      } else {
-        // save new user
-        user = new User({
-          username: req.body.username,
-          password: req.body.password
-        });
-
-        user.save(error => {
-          if (error) {
-            res.status(500);
-            logger.error(`Error has occured: ${error}`);
-            return;
-          }
-          res.status(201).send('User is successfully registered');
-        });
+        return res.status(400).send('Username already registered');
       }
-    });
+      // save new user
+      user = new User({
+        username,
+        password
+      });
+
+      await user.save();
+
+      res.status(201).send('User is successfully registered');
+    } catch (err) {
+      logger.error(err.message);
+      res.status(500).send('Server error');
+    }
   }
 };

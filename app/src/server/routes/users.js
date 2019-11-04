@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const user_register = require('../controllers/users');
 
-router.post('/', (req, res) => {
-  res.status(500);
-});
+router.post('/', user_register.register);
 
 router.post('/:username', (req, res) => {
   res.status(500);

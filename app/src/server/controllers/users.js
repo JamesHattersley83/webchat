@@ -1,36 +1,26 @@
+require('dotenv').config();
 const request = require('request-promise');
 
 module.exports = {
-  register: function(req, res, next) {
-    const { success, userid, username, token } = req.body;
-    // res.status(500).send({
-    //   success: success,
-    //   userid: userid,
-    //   username: username,
-    //   token: token
-    // });
-
+  register: (req, res, next) => {
     new Promise((resolve, reject) => {
       let options = {
         method: 'POST',
-        uri: `http://localhost:3000/user`,
-        body: {
-          success: success,
-          userid: userid,
-          username: username,
-          token: token
-        },
+        uri: 'http://localhost:3000/user',
+        body: { username: req.body.username, password: req.body.password },
         json: true
       };
 
       request(options)
-        .then(result => {
-          res.send('User sucessfully registered');
+        .then(function(result) {
+          res
+            .status(201)
+            .send({ success: false, userid: '', username: '', token: '' });
           resolve();
         })
-        .catch(err => {
+        .catch(function(err) {
           console.log(err);
-          res.send('error');
+          res.status(400).send('user already exists');
           return;
         });
     });

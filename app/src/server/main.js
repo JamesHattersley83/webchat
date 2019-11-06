@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const users = require('./routes/users');
@@ -5,13 +6,7 @@ const users = require('./routes/users');
 const app = express();
 
 // init middleware
-app.use(express.json({ extended: true }));
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+app.use(express.json());
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '../../dist')));
@@ -21,5 +16,11 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', users);
+
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});
 
 module.exports = app;

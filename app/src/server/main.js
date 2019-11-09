@@ -6,7 +6,7 @@ const users = require('./routes/users');
 const app = express();
 
 // init middleware
-app.use(express.json());
+app.use(express.json({ extended: true }));
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '../../dist')));

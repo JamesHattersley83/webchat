@@ -52,7 +52,10 @@ module.exports = {
 
       await user.save();
 
-      res.status(201).send('User is successfully registered');
+      res.status(201).send({
+        userid: user._id,
+        username: user.username
+      });
     } catch (err) {
       logger.error(err.message);
       res.status(500).send('Server error');

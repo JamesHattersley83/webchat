@@ -5,21 +5,16 @@ const expect = chai.expect;
 let app = require('../../main');
 
 describe('POST /user', () => {
-  it('It should return a status of 201', done => {
-    request(app)
+  it('It should return a status of 201', async () => {
+    const res = await request(app)
       .post('/user')
-      .send({ username: 'Barry', password: '456778' })
-      .end((err, res) => {
-        const body = res.body;
-        expect(res.statusCode).to.equal(201);
-        expect(body).to.be.an('object');
-        expect(body).to.include({
-          success: false,
-          userid: '',
-          username: '',
-          token: ''
-        });
-        done();
-      });
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .send({ username: 'test3', password: '123456' });
+    expect(201);
+    expect(res.body).to.contain.property('success');
+    expect(res.body).to.contain.property('userid');
+    expect(res.body).to.contain.property('username');
+    expect(res.body).to.contain.property('token');
   });
 });

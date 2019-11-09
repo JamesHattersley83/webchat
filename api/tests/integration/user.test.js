@@ -20,16 +20,12 @@ describe('user.js', () => {
         .expect(200);
     });
   });
-  describe('register', async () => {
-    it('Given a username and password that matches criteria it should create the user account and return 201', async () => {
-      await request(server)
+  describe('register', () => {
+    it('Given a username and password that matches criteria it should create the user account and return the userid and username', async () => {
+      const res = await request(server)
         .post('/user/')
-        .send({ username: 'James', password: '123456' })
-        .expect(201)
-        .expect((req, res) => {
-          res.body.userid = '';
-          res.body.username = req.body.username;
-        });
+        .send({ username: 'James', password: '123456' });
+      expect((res.body.userid, (res.body.username = 'James')));
     });
     it('Should pass a status of 400 if the username already exists', async () => {
       await request(server)

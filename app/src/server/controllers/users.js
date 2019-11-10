@@ -30,10 +30,12 @@ module.exports = {
             dataResponse.username = result.body.username;
           }
           res.status(result.statusCode).send(dataResponse);
+          resolve();
         })
         .catch(function(err) {
           console.log(err);
           res.status(500).send('Server error...');
+          reject();
         });
     });
   }

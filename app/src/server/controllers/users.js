@@ -38,5 +38,40 @@ module.exports = {
           reject();
         });
     });
+  },
+
+  login: (req, res, next) => {
+    new Promise((resolve, reject) => {
+      let options = {
+        method: 'POST',
+        uri: 'http://localhost:3000/user/' + req.params.username,
+        body: { password: req.body.password },
+        json: true,
+        resolveWithFullResponse: true,
+        simple: false
+      };
+
+      request(options)
+        .then(result => {
+          let dataResponse = {
+            success: false,
+            userid: '',
+            username: '',
+            token: ''
+          };
+          if (result.statusCode === 200) {
+            dataResponse.success = true;
+            dataResponse.userid = result.body.userid;
+            dataResponse.username = result.body.username;
+          }
+          res.status(result.statusCode).send(dataResponse);
+          resolve();
+        })
+        .catch(function(err) {
+          console.log(err);
+          res.status(500).send('Server error...');
+          reject();
+        });
+    });
   }
 };

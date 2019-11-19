@@ -4,8 +4,6 @@ const user_register = require('../controllers/users');
 
 router.post('/', user_register.register);
 
-router.post('/:username', (req, res) => {
-  res.status(500);
-});
+router.post('/:username', user_register.login);
 
 module.exports = router;

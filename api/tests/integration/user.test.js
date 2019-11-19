@@ -1,7 +1,18 @@
 const request = require('supertest');
 const chai = require('chai');
+const generator = require('generate-password');
 const expect = chai.expect;
 let server;
+
+let password = generator.generate({
+  length: 8,
+  numbers: true
+});
+
+let username = generator.generate({
+  length: 6,
+  numbers: false
+});
 
 describe('user.js', () => {
   server = require('../../main');
@@ -14,10 +25,17 @@ describe('user.js', () => {
     done();
   });
   describe('login', () => {
-    it('should return a status of 200', async () => {
+    before(async () => {
       await request(server)
-        .post('/user/:username')
+        .post('/user/')
+        .send({ username: username, password: password });
+    });
+    it('should return a status of 200 when username and password match existing user in db', async () => {
+      const res = await request(server)
+        .post('/user/' + username)
+        .send({ username: username, password: password })
         .expect(200);
+      expect((username = username), res.body.userid);
     });
   });
   describe('register', () => {

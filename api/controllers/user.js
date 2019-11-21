@@ -7,9 +7,13 @@ module.exports = {
   login: async function(req, res, next) {
     let username = req.params.username;
     let password = req.body.password;
-    logger.info(`User ${username} attempting to log in`);
 
     try {
+      if (!(username && password)) {
+        return res.status(400).send('Invalid login details entered...');
+      }
+      logger.info(`User ${username} attempting to log in`);
+
       // check if username is already in db
       let user = await User.findOne({ username, password });
 

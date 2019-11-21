@@ -30,6 +30,12 @@ describe('user.js', () => {
         .post('/user/')
         .send({ username: username, password: password });
     });
+    it('should return a status of 400 if no username or password is entered', async () => {
+      const res = await request(server)
+        .post('/user/')
+        .send({})
+        .expect(400);
+    });
     it('should return a status of 200 when username and password match existing user in db', async () => {
       const res = await request(server)
         .post('/user/' + username)

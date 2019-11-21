@@ -44,7 +44,7 @@ module.exports = {
     new Promise((resolve, reject) => {
       let options = {
         method: 'POST',
-        uri: 'http://localhost:3000/user/' + req.params.username,
+        uri: URL + req.params.username,
         body: { password: req.body.password },
         json: true,
         resolveWithFullResponse: true,

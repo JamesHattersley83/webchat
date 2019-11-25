@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Chat from './UI/chat';
 
 class App extends React.Component {
   render() {
-    return <h1>Hello from Webchat</h1>;
+    return (
+      <div>
+        <Chat />
+      </div>
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setRegisterStatus } from '../actions/actions';
+import { setRegisterStatus, registerNewUser } from '../actions/actions';
 
 class Registration extends React.Component {
   constructor(props) {
@@ -23,8 +23,12 @@ class Registration extends React.Component {
       'Username: ' + this.state.username,
       'Password: ' + this.state.password
     );
+    this.props.dispatch(setRegisterStatus('Registering user...'));
 
-    this.props.dispatch(setRegisterStatus('Registering...'));
+    this.props.dispatch(
+      registerNewUser(this.state.username, this.state.password)
+    );
+
     event.preventDefault();
   }
 

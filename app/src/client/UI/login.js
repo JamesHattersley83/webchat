@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { setRegisterStatus, registerNewUser } from '../actions/actions';
 
-class Registration extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,10 +25,6 @@ class Registration extends React.Component {
     );
     this.props.dispatch(setRegisterStatus('Registering user...'));
 
-    this.props.dispatch(
-      registerNewUser(this.state.username, this.state.password)
-    );
-
     event.preventDefault();
   }
 
@@ -37,7 +33,7 @@ class Registration extends React.Component {
       <div>
         <form onSubmit={this.register}>
           {this.props.auth.regStatus}
-          <h3>Register</h3>
+          <h3>Login</h3>
           <label>
             Username:
             <input type="text" id="username" onChange={this.handleChange} />
@@ -59,4 +55,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Registration);
+export default connect(mapStateToProps)(Login);

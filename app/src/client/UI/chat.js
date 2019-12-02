@@ -1,11 +1,11 @@
 import React from 'react';
-import Registration from './registration';
+import Authentication from './authentication';
 
 class Chat extends React.Component {
   render() {
     return (
       <div>
-        <Registration />
+        <Authentication />
       </div>
     );
   }

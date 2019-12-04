@@ -11,9 +11,9 @@ class Authentication extends React.Component {
     this.toggleScreen = this.toggleScreen.bind(this);
   }
 
-  toggleScreen(event) {
+  toggleScreen(name) {
     this.setState({
-      screen: event.target.value
+      screen: `${name}`
     });
     event.preventDefault();
   }
@@ -21,8 +21,8 @@ class Authentication extends React.Component {
   render() {
     return (
       <div>
-        <input type="submit" value="register" onClick={this.toggleScreen} />
-        <input type="submit" value="login" onClick={this.toggleScreen} />
+        <button onClick={() => this.toggleScreen('register')}>Register</button>
+        <button onClick={() => this.toggleScreen('login')}>Login</button>
         {this.state.screen == 'login' ? <Login /> : <Registration />}
       </div>
     );

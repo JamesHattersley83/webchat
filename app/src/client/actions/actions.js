@@ -7,6 +7,13 @@ export const setRegisterStatus = status => {
   };
 };
 
+export const setLoginStatus = status => {
+  return {
+    type: actionTypes.SET_LOGIN_STATUS,
+    status: status
+  };
+};
+
 export const registerNewUser = (username, password) => {
   const data = { username, password };
   return dispatch => {
@@ -44,6 +51,47 @@ export const registerNewUser = (username, password) => {
       .catch(e => {
         // Exception
         dispatch(setRegisterStatus('Server Error..'));
+      });
+  };
+};
+
+export const loginUser = (username, password) => {
+  const data = { username, password };
+  return dispatch => {
+    dispatch(setLoginStatus('Attempting login..'));
+
+    return fetch(`/user/${data.username}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      mode: 'cors'
+    })
+      .then(response => {
+        if (!response.ok) {
+          if (response.status == 400) {
+            return response.json();
+          }
+          throw Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Success
+          dispatch(setLoginStatus('Successful login..'));
+          console.log(data);
+        } else {
+          // Server did not return success = true
+          dispatch(setLoginStatus('Error Logging in user..'));
+          console.log(data);
+        }
+      })
+      .catch(e => {
+        // Exception
+        dispatch(setLoginStatus('Server Error..'));
       });
   };
 };

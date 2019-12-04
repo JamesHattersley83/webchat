@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setRegisterStatus, registerNewUser } from '../actions/actions';
+import { setLoginStatus, loginUser } from '../actions/actions';
 
 class Login extends React.Component {
   constructor(props) {
@@ -11,19 +11,21 @@ class Login extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
   }
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState({ [event.target.id]: event.target.value });
   }
 
-  register(event) {
+  login(event) {
     console.log(
       'Username: ' + this.state.username,
       'Password: ' + this.state.password
     );
-    this.props.dispatch(setRegisterStatus('Registering user...'));
+    this.props.dispatch(setLoginStatus('Logging in user...'));
+
+    this.props.dispatch(loginUser(this.state.username, this.state.password));
 
     event.preventDefault();
   }
@@ -31,8 +33,8 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.register}>
-          {this.props.auth.regStatus}
+        <form onSubmit={this.login}>
+          {this.props.auth.logStatus}
           <h3>Login</h3>
           <label>
             Username:

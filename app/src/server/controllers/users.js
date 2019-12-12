@@ -1,10 +1,16 @@
 const path = require('path');
 require('dotenv').config();
 const request = require('request-promise');
+const jwt = require('jsonwebtoken');
 
 URL = process.env.URL;
 
 module.exports = {
+  debug: function(req, res, next) {
+    console.log(req.userData);
+    return res.send('Complete');
+  },
+
   register: (req, res, next) => {
     new Promise((resolve, reject) => {
       let options = {
@@ -28,6 +34,14 @@ module.exports = {
             dataResponse.success = true;
             dataResponse.userid = result.body.userid;
             dataResponse.username = result.body.username;
+            dataResponse.token = jwt.sign(
+              {
+                username: result.body.username,
+                userid: result.body.userid
+              },
+              process.env.JWTSECRET,
+              { expiresIn: '12h' }
+            );
           }
           res.status(result.statusCode).send(dataResponse);
           resolve();
@@ -63,6 +77,14 @@ module.exports = {
             dataResponse.success = true;
             dataResponse.userid = result.body.userid;
             dataResponse.username = result.body.username;
+            dataResponse.token = jwt.sign(
+              {
+                username: result.body.username,
+                userid: result.body.userid
+              },
+              process.env.JWTSECRET,
+              { expiresIn: '12h' }
+            );
           }
           res.status(result.statusCode).send(dataResponse);
           resolve();

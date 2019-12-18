@@ -14,6 +14,15 @@ export const setLoginStatus = status => {
   };
 };
 
+export const userLoggedIn = (username, userid, token) => {
+  return {
+    type: actionTypes.SET_LOGIN_USER,
+    username: username,
+    userid: userid,
+    token: token
+  };
+};
+
 export const registerNewUser = (username, password) => {
   const data = { username, password };
   return dispatch => {
@@ -40,12 +49,11 @@ export const registerNewUser = (username, password) => {
       .then(data => {
         if (data.success) {
           // Success
-          dispatch(setRegisterStatus('Successful registration..'));
+          dispatch(userLoggedIn(data.username, data.userid, data.token));
           console.log(data);
         } else {
           // Server did not return success = true
           dispatch(setRegisterStatus('Error Registering user..'));
-          console.log(data);
         }
       })
       .catch(e => {
@@ -81,7 +89,7 @@ export const loginUser = (username, password) => {
       .then(data => {
         if (data.success) {
           // Success
-          dispatch(setLoginStatus('Successful login..'));
+          dispatch(userLoggedIn(data.username, data.userid, data.token));
           console.log(data);
         } else {
           // Server did not return success = true

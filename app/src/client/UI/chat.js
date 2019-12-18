@@ -1,14 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Authentication from './authentication';
+import ChatScreen from './chatScreen';
 
 class Chat extends React.Component {
   render() {
     return (
       <div>
-        <Authentication />
+        {this.props.auth.loggedIn ? <ChatScreen /> : <Authentication />}
       </div>
     );
   }
 }
 
-export default Chat;
+const mapStateToProps = state => {
+  return {
+    auth: state.auth
+  };
+};
+
+export default connect(mapStateToProps)(Chat);

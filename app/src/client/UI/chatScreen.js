@@ -22,7 +22,7 @@ class ChatScreen extends React.Component {
     return (
       <div className="container">
         <div className="window">
-          <div className="chats"></div>
+          <div className="chats">{this.props.chat.messages}</div>
           <div className="new-chat">
             <input type="text" id="message" onChange={this.handleChange} />
             <button id="send" onClick={this.handleSubmit}>
@@ -37,7 +37,8 @@ class ChatScreen extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth
+    auth: state.auth,
+    chat: state.chat
   };
 };
 

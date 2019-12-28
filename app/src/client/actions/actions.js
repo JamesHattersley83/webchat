@@ -103,3 +103,12 @@ export const loginUser = (username, password) => {
       });
   };
 };
+
+export const setUImessage = (msgTime, username, message) => {
+  return {
+    type: actionTypes.SET_UI_MESSAGE,
+    msgTime: msgTime,
+    username: username,
+    message: message
+  };
+};

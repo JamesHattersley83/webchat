@@ -1,6 +1,11 @@
 body {
   font-family: helvetica, sans-serif;
 }
+
+div {
+  white-space: pre-wrap;
+}
+
 .container {
   border: 1px solid #000;
   width: 60%;

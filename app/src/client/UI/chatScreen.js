@@ -1,6 +1,7 @@
 import React from 'react';
 import './chatScreen.css';
 import { connect } from 'react-redux';
+import { setUImessage } from '../actions/actions';
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -17,6 +18,10 @@ class ChatScreen extends React.Component {
 
   handleSubmit(event) {
     console.log(this.state.value);
+    const currentDate = new Date();
+    this.props.dispatch(
+      setUImessage(currentDate, this.props.auth.username, this.state.value)
+    );
   }
   render() {
     return (

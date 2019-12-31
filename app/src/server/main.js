@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const socketIO = require('socket.io');
 const path = require('path');
 const users = require('./routes/users');
 
@@ -19,8 +20,10 @@ app.use('/user', users);
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
+let requestHandler = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
+
+const io = socketIO(requestHandler);
 
 module.exports = app;

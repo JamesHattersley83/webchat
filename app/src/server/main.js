@@ -1,4 +1,5 @@
 require('dotenv').config();
+const ChatServer = require('./ChatServer');
 const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
@@ -25,5 +26,8 @@ let requestHandler = app.listen(PORT, () => {
 });
 
 const io = socketIO(requestHandler);
+
+const chatServer = new ChatServer(io);
+chatServer.init();
 
 module.exports = app;

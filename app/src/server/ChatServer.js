@@ -1,4 +1,4 @@
-class ChatServer {
+module.exports = class ChatServer {
   constructor(io) {
     this.io = io;
   }
@@ -9,4 +9,4 @@ class ChatServer {
       socket.emit('test', { hello: 'world' });
     });
   }
-}
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+const SocketClient = require('socket.io-client');
 import './chatScreen.css';
 import { connect } from 'react-redux';
 import { setUImessage } from '../actions/actions';
@@ -10,6 +11,40 @@ class ChatScreen extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  initSocket() {
+    let settings;
+    if (window.location.protocol == 'http') {
+      console.log('Connecting on HTTP');
+      settings = {
+        reconnection: false,
+        autoConnect: false,
+        transports: ['websocket']
+      };
+    } else {
+      console.log('Connecting on HTTPS');
+      settings = {
+        secure: true,
+        reconnection: false,
+        autoConnect: false,
+        transports: ['websocket']
+      };
+    }
+
+    let chatSocket = SocketClient('/', settings);
+
+    chatSocket.on('connect', () => {
+      console.log('connected');
+    });
+    chatSocket.on('test', data => {
+      console.log('Data: ', data);
+    });
+    chatSocket.connect();
+  }
+
+  componentDidMount() {
+    this.initSocket();
   }
 
   handleChange(event) {

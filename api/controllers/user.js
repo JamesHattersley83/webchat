@@ -15,15 +15,22 @@ module.exports = {
       logger.info(`User ${username} attempting to log in`);
 
       // check if username is already in db
-      let user = await User.findOne({ username, password });
+      let user = await User.findOne({ username });
 
       if (user) {
-        return res
-          .status(200)
-          .send({ username: user.username, userid: user._id });
+        // compare hash password with password
+        user.comparePassword(password, (err, isMatch) => {
+          if (err) throw err;
+          if (isMatch) {
+            res.status(200).send({ username: user.username, userid: user._id });
+            console.log(password, isMatch);
+          } else {
+            res.status(401).send('Unsuccessful login');
+          }
+        });
+      } else {
+        res.status(401).send('Unsuccessful login');
       }
-
-      res.status(401).send('Unsuccessful login');
     } catch (err) {
       logger.error(err.message);
       res.status(500).send('Server error');

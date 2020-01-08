@@ -28,6 +28,8 @@ module.exports = {
             res.status(401).send('Unsuccessful login');
           }
         });
+      } else {
+        res.status(401).send('Unsuccessful login');
       }
     } catch (err) {
       logger.error(err.message);

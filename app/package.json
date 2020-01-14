@@ -12,7 +12,7 @@
   "scripts": {
     "build": "webpack",
     "start": " nodemon ./src/server/main.js",
-    "test": "mocha './src/server/tests/integration/user.test.js'"
+    "test": "mocha --exit --timeout 10000 --recursive ./src/server/tests/integration/"
   },
   "keywords": [],
   "author": "",

@@ -1,27 +1,32 @@
 const request = require('supertest');
 const chai = require('chai');
 const expect = chai.expect;
-const io = require('socket.io-client');
+const SocketClient = require('socket.io-client');
+
+let settings;
+settings = {
+  reconnection: false,
+  autoConnect: false,
+  transports: ['websocket']
+};
+
+let chatSocket = SocketClient('/', settings);
 
 describe('sockets', () => {
   let app = require('../../main');
+
   before(() => {
     // create socketio connection
-    let socketUrl = 'http://localhost:4000';
-
-    let options = {
-      transports: ['websocket'],
-      'force new connection': true
-    };
-
-    client = io.connect(socketUrl, options);
+    chatSocket.on('connect', () => {
+      console.log('connected');
+    });
   });
-  it('It should send and receive and message', done => {
+  it('It should send and receive and message', () => {
     // setup event handlers for listening for message
-    client.on('test', data => {
+    chatSocket.on('test', data => {
       console.log('Data: ', data);
       done();
     });
-    client.connect();
+    chatSocket.connect();
   });
 });

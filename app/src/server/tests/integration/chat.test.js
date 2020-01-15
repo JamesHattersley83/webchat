@@ -10,13 +10,14 @@ settings = {
   transports: ['websocket']
 };
 
-let chatSocket = SocketClient('/', settings);
+let chatSocket;
 
 describe('sockets', () => {
   let app = require('../../main');
 
   before(() => {
     // create socketio connection
+    chatSocket = SocketClient('/', settings);
     chatSocket.on('connect', () => {
       console.log('connected');
     });

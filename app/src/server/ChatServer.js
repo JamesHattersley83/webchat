@@ -12,9 +12,14 @@ module.exports = class ChatServer {
 
       // join message event
       socket.on(chatConstants.JOIN, (userid, username) => {
-        // send array of users back to client
-        socket.emit('users', {
+        socket.emit(chatConstants.USERS, {
           users: [{ userid: userid, username: username }]
+        });
+
+        // send message to all connected users that new user has joined
+        socket.broadcast.emit(chatConstants.JOINED, {
+          userid: userid,
+          username: username
         });
       });
     });

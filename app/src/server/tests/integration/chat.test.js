@@ -16,6 +16,16 @@ let username = generator.generate({
   numbers: false
 });
 
+let password2 = generator.generate({
+  length: 8,
+  numbers: true
+});
+
+let username2 = generator.generate({
+  length: 6,
+  numbers: false
+});
+
 TEST_URL = process.env.TEST_URL;
 
 let settings;
@@ -26,8 +36,11 @@ settings = {
 };
 
 let chatSocket;
-let testuserid;
-let testusername;
+let chatSocket2;
+let testuserid1;
+let testusername1;
+let testuserid2;
+let testusername2;
 
 describe('sockets', () => {
   let app = require('../../main');
@@ -36,19 +49,31 @@ describe('sockets', () => {
     const res = await request(app)
       .post('/user/')
       .send({ username: username, password: password });
-    testusername = res.body.username;
-    testuserid = res.body.userid;
+    testusername1 = res.body.username;
+    testuserid1 = res.body.userid;
+    const res2 = await request(app)
+      .post('/user/')
+      .send({ username: username2, password: password2 });
+    testusername2 = res2.body.username;
+    testuserid2 = res2.body.userid;
   });
 
-  beforeEach(async () => {
+  beforeEach(done => {
     // create socketio object
     chatSocket = SocketClient(TEST_URL, settings);
     chatSocket.on('connect', () => {
       console.log('socket connected');
     });
+    chatSocket2 = SocketClient(TEST_URL, settings);
+    chatSocket2.on('connect', () => {
+      console.log('socket 2 connected');
+    });
+    done();
   });
-  afterEach(() => {
+  afterEach(done => {
     chatSocket.disconnect();
+    chatSocket2.disconnect();
+    done();
   });
   it('It should receive connected message when socket connects', function(done) {
     // setup event handlers listening for connected message
@@ -62,7 +87,7 @@ describe('sockets', () => {
     // setup event handlers listening for connected message
     chatSocket.on(chatConstants.CONNECTED, () => {
       // send join message when connected is received
-      chatSocket.emit(chatConstants.JOIN, testuserid, testusername);
+      chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
       // setup event handlers listening for users message
       chatSocket.on('users', users => {
         console.log(users);
@@ -70,5 +95,31 @@ describe('sockets', () => {
       });
     });
     chatSocket.connect();
+  });
+  it('Should broadcast new user to all connected users', function(done) {
+    // connect socket and receive connected message
+    chatSocket.on(chatConstants.CONNECTED, () => {
+      chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
+
+      chatSocket.on(chatConstants.USERS, users => {
+        console.log(users);
+      });
+
+      chatSocket2.on(chatConstants.CONNECTED, () => {
+        chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
+      });
+
+      chatSocket2.on(chatConstants.USERS, users => {
+        console.log(users);
+      });
+
+      chatSocket.on(chatConstants.JOINED, user => {
+        console.log(chatConstants.JOINED, user);
+        done();
+      });
+    });
+
+    chatSocket.connect();
+    chatSocket2.connect();
   });
 });

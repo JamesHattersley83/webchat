@@ -99,23 +99,21 @@ describe('sockets', () => {
   it('Should broadcast new user to all connected users', function(done) {
     // connect socket and receive connected message
     chatSocket.on(chatConstants.CONNECTED, () => {
+      // send join message when connected is received
       chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
-
-      chatSocket.on(chatConstants.USERS, users => {
-        console.log(users);
-      });
-
+      // connect socket2 and receive connected message
       chatSocket2.on(chatConstants.CONNECTED, () => {
+        // send join message when connected is received
         chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
+        // setup event handlers listening for users message
+        chatSocket.on(chatConstants.USERS, users => {
+          console.log(users);
+          done();
+        });
       });
-
-      chatSocket2.on(chatConstants.USERS, users => {
-        console.log(users);
-      });
-
+      // socket to receive joined message with socket2 data
       chatSocket.on(chatConstants.JOINED, user => {
         console.log(chatConstants.JOINED, user);
-        done();
       });
     });
 

@@ -75,49 +75,87 @@ describe('sockets', () => {
     chatSocket2.disconnect();
     done();
   });
-  it('It should receive connected message when socket connects', function(done) {
-    // setup event handlers listening for connected message
-    chatSocket.on(chatConstants.CONNECTED, data => {
+  it('It should receive connected message when socket connects', () => {
+    return new Promise(resolve => {
+      chatSocket.on(chatConstants.CONNECTED, data => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    }).then(data => {
       console.log(chatConstants.CONNECTED, data);
-      done();
     });
-    chatSocket.connect();
   });
-  it('It should send the join message to server when connected', function(done) {
-    // setup event handlers listening for connected message
-    chatSocket.on(chatConstants.CONNECTED, () => {
-      // send join message when connected is received
-      chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
-      // setup event handlers listening for users message
-      chatSocket.on('users', users => {
-        console.log(users);
+
+  it('It should send the join message to server when connected', () => {
+    return new Promise(resolve => {
+      chatSocket.on(chatConstants.CONNECTED, data => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.USERS, users => {
+            resolve(users);
+          });
+          chatSocket.connect();
+        });
+      })
+      .then(users => {
+        console.log(chatConstants.USERS, users);
+      });
+  });
+
+  it('Should broadcast new user to all connected users', done => {
+    new Promise(resolve => {
+      chatSocket.on(chatConstants.CONNECTED, data => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.USERS, users => {
+            resolve(users);
+          });
+          chatSocket.connect();
+        });
+      })
+      .then(users => {
+        console.log(chatConstants.USERS, users);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket2.on(chatConstants.CONNECTED, data => {
+            resolve(data);
+          });
+          chatSocket2.connect();
+        });
+      })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.JOINED, user => {
+            resolve(user);
+          });
+        });
+      })
+      .then(user => {
+        console.log(chatConstants.JOINED, user);
+        expect(user.userid).to.equal(testuserid2);
+        expect(user.username).to.equal(testusername2);
         done();
       });
-    });
-    chatSocket.connect();
-  });
-  it('Should broadcast new user to all connected users', function(done) {
-    // connect socket and receive connected message
-    chatSocket.on(chatConstants.CONNECTED, () => {
-      // send join message when connected is received
-      chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
-      // connect socket2 and receive connected message
-      chatSocket2.on(chatConstants.CONNECTED, () => {
-        // send join message when connected is received
-        chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
-        // setup event handlers listening for users message
-        chatSocket.on(chatConstants.USERS, users => {
-          console.log(users);
-          done();
-        });
-      });
-      // socket to receive joined message with socket2 data
-      chatSocket.on(chatConstants.JOINED, user => {
-        console.log(chatConstants.JOINED, user);
-      });
-    });
-
-    chatSocket.connect();
-    chatSocket2.connect();
   });
 });

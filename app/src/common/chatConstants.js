@@ -2,5 +2,6 @@ module.exports = {
   CONNECTED: 'connected',
   JOIN: 'join',
   USERS: 'users',
-  JOINED: 'joined'
+  JOINED: 'joined',
+  LEFT: 'left'
 };

@@ -71,8 +71,8 @@ describe('sockets', () => {
     done();
   });
   afterEach(done => {
-    chatSocket.disconnect();
-    chatSocket2.disconnect();
+    // chatSocket.disconnect();
+    // chatSocket2.disconnect();
     done();
   });
   it('It should receive connected message when socket connects', () => {
@@ -102,7 +102,6 @@ describe('sockets', () => {
           chatSocket.on(chatConstants.USERS, users => {
             resolve(users);
           });
-          chatSocket.connect();
         });
       })
       .then(users => {
@@ -126,7 +125,6 @@ describe('sockets', () => {
           chatSocket.on(chatConstants.USERS, users => {
             resolve(users);
           });
-          chatSocket.connect();
         });
       })
       .then(users => {
@@ -155,6 +153,65 @@ describe('sockets', () => {
         console.log(chatConstants.JOINED, user);
         expect(user.userid).to.equal(testuserid2);
         expect(user.username).to.equal(testusername2);
+        done();
+      });
+  });
+  it('Should broadcast to all connected users when a user has disconnected', done => {
+    new Promise(resolve => {
+      chatSocket.on(chatConstants.CONNECTED, data => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.USERS, users => {
+            resolve(users);
+          });
+        });
+      })
+      .then(users => {
+        console.log(chatConstants.USERS, users);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket2.on(chatConstants.CONNECTED, data => {
+            resolve(data);
+          });
+          chatSocket2.connect();
+        });
+      })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.JOINED, user => {
+            resolve(user);
+          });
+        });
+      })
+      .then(user => {
+        console.log(chatConstants.JOINED, user);
+        expect(user.userid).to.equal(testuserid2);
+        expect(user.username).to.equal(testusername2);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.LEFT, user => {
+            resolve(user);
+          });
+          chatSocket2.disconnect();
+        });
+      })
+      .then(user => {
+        console.log(chatConstants.LEFT, user);
+        expect(user.userid).to.equal(testuserid2);
         done();
       });
   });

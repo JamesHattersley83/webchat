@@ -21,6 +21,13 @@ module.exports = class ChatServer {
           userid: userid,
           username: username
         });
+        // send message to all connected users that a user has left
+        socket.on('disconnect', () => {
+          console.log('client disconnected to Chat Server..');
+          socket.broadcast.emit(chatConstants.LEFT, {
+            userid: userid
+          });
+        });
       });
     });
   }

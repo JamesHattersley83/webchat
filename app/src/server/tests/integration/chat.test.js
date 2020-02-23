@@ -41,6 +41,7 @@ let testuserid1;
 let testusername1;
 let testuserid2;
 let testusername2;
+let message = 'Hello World';
 
 describe('sockets', () => {
   let app = require('../../main');
@@ -212,6 +213,71 @@ describe('sockets', () => {
       .then(user => {
         console.log(chatConstants.LEFT, user);
         expect(user.userid).to.equal(testuserid2);
+        done();
+      });
+  });
+  it('Should broadcast a message to all connected users', done => {
+    new Promise(resolve => {
+      chatSocket.on(chatConstants.CONNECTED, data => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket.emit(chatConstants.JOIN, testuserid1, testusername1);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.USERS, users => {
+            resolve(users);
+          });
+        });
+      })
+      .then(users => {
+        console.log(chatConstants.USERS, users);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket2.on(chatConstants.CONNECTED, data => {
+            resolve(data);
+          });
+          chatSocket2.connect();
+        });
+      })
+      .then(data => {
+        console.log(chatConstants.CONNECTED, data);
+        chatSocket2.emit(chatConstants.JOIN, testuserid2, testusername2);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on(chatConstants.JOINED, user => {
+            resolve(user);
+          });
+        });
+      })
+      .then(user => {
+        console.log(chatConstants.JOINED, user);
+        expect(user.userid).to.equal(testuserid2);
+        expect(user.username).to.equal(testusername2);
+      })
+      .then(() => {
+        chatSocket.emit(chatConstants.MSG, message);
+      })
+      .then(() => {
+        return new Promise(resolve => {
+          chatSocket.on('chat', data => {
+            resolve(data);
+            console.log('inside client', data);
+          });
+        });
+      })
+      .then(data => {
+        expect(data.userid).to.equal(testuserid1);
+        expect(data.msg).to.equal(message);
+        expect(data.msgTime).to.equal(
+          new Date().getHours() + ':' + new Date().getMinutes()
+        );
         done();
       });
   });

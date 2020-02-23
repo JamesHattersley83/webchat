@@ -3,5 +3,6 @@ module.exports = {
   JOIN: 'join',
   USERS: 'users',
   JOINED: 'joined',
-  LEFT: 'left'
+  LEFT: 'left',
+  MSG: 'msg'
 };

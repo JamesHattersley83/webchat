@@ -76,7 +76,7 @@ describe('sockets', () => {
     // chatSocket2.disconnect();
     done();
   });
-  it('It should receive connected message when socket connects', () => {
+  it('Should receive the CONNECTED message when socket connects', () => {
     return new Promise(resolve => {
       chatSocket.on(chatConstants.CONNECTED, data => {
         resolve(data);
@@ -87,7 +87,7 @@ describe('sockets', () => {
     });
   });
 
-  it('It should send the join message to server when connected', () => {
+  it('Should receive USERS message containing a list of users after sending join message to server', () => {
     return new Promise(resolve => {
       chatSocket.on(chatConstants.CONNECTED, data => {
         resolve(data);
@@ -110,7 +110,7 @@ describe('sockets', () => {
       });
   });
 
-  it('Should broadcast new user to all connected users', done => {
+  it('Should receive a JOINED message containing the userid of new user joined', done => {
     new Promise(resolve => {
       chatSocket.on(chatConstants.CONNECTED, data => {
         resolve(data);
@@ -157,7 +157,7 @@ describe('sockets', () => {
         done();
       });
   });
-  it('Should broadcast to all connected users when a user has disconnected', done => {
+  it('Should receive a LEFT message containing the userid of the user disconnected', done => {
     new Promise(resolve => {
       chatSocket.on(chatConstants.CONNECTED, data => {
         resolve(data);
@@ -216,7 +216,7 @@ describe('sockets', () => {
         done();
       });
   });
-  it('Should broadcast a message to all connected users', done => {
+  it('Should receive a MSG message containing the userid, msg and msgTime', done => {
     new Promise(resolve => {
       chatSocket.on(chatConstants.CONNECTED, data => {
         resolve(data);

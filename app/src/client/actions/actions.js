@@ -1,16 +1,16 @@
 import actionTypes from './actionTypes';
 
-export const setRegisterStatus = status => {
+export const setRegisterStatus = (status) => {
   return {
     type: actionTypes.SET_REGISTER_STATUS,
-    status: status
+    status: status,
   };
 };
 
-export const setLoginStatus = status => {
+export const setLoginStatus = (status) => {
   return {
     type: actionTypes.SET_LOGIN_STATUS,
-    status: status
+    status: status,
   };
 };
 
@@ -19,25 +19,25 @@ export const userLoggedIn = (username, userid, token) => {
     type: actionTypes.SET_LOGIN_USER,
     username: username,
     userid: userid,
-    token: token
+    token: token,
   };
 };
 
 export const registerNewUser = (username, password) => {
   const data = { username, password };
-  return dispatch => {
+  return (dispatch) => {
     dispatch(setRegisterStatus('Attempting registration..'));
 
     return fetch('/user', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-      mode: 'cors'
+      mode: 'cors',
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           if (response.status == 400) {
             return response.json();
@@ -46,7 +46,7 @@ export const registerNewUser = (username, password) => {
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data.success) {
           // Success
           dispatch(userLoggedIn(data.username, data.userid, data.token));
@@ -56,7 +56,7 @@ export const registerNewUser = (username, password) => {
           dispatch(setRegisterStatus('Error Registering user..'));
         }
       })
-      .catch(e => {
+      .catch((e) => {
         // Exception
         dispatch(setRegisterStatus('Server Error..'));
       });
@@ -65,19 +65,19 @@ export const registerNewUser = (username, password) => {
 
 export const loginUser = (username, password) => {
   const data = { username, password };
-  return dispatch => {
+  return (dispatch) => {
     dispatch(setLoginStatus('Attempting login..'));
 
     return fetch(`/user/${data.username}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-      mode: 'cors'
+      mode: 'cors',
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           if (response.status == 400) {
             return response.json();
@@ -86,7 +86,7 @@ export const loginUser = (username, password) => {
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data.success) {
           // Success
           dispatch(userLoggedIn(data.username, data.userid, data.token));
@@ -97,7 +97,7 @@ export const loginUser = (username, password) => {
           console.log(data);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         // Exception
         dispatch(setLoginStatus('Server Error..'));
       });
@@ -109,6 +109,13 @@ export const setUImessage = (msgTime, username, message) => {
     type: actionTypes.SET_UI_MESSAGE,
     msgTime: msgTime,
     username: username,
-    message: message
+    message: message,
+  };
+};
+
+export const setConnectedStatus = (status) => {
+  return {
+    type: actionTypes.SET_CONNECTED_STATUS,
+    status: status,
   };
 };

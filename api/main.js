@@ -24,7 +24,11 @@ const dbURL = process.env.MONGO_DB_URL;
 new Promise((resolve, reject) => {
   mongoose.connect(
     dbURL,
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    },
     err => {
       if (err) {
         logger.error(`Error connecting to: ${dbURL}`);

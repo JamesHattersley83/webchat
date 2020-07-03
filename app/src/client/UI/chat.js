@@ -13,9 +13,10 @@ class Chat extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    auth: state.auth
+    auth: state.auth,
+    chat: state.chat,
   };
 };
 

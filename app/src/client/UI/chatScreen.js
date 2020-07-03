@@ -2,7 +2,7 @@ import React from 'react';
 const SocketClient = require('socket.io-client');
 import './chatScreen.css';
 import { connect } from 'react-redux';
-import { setUImessage } from '../actions/actions';
+import { setUImessage, setConnectedStatus } from '../actions/actions';
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class ChatScreen extends React.Component {
       settings = {
         reconnection: false,
         autoConnect: false,
-        transports: ['websocket']
+        transports: ['websocket'],
       };
     } else {
       console.log('Connecting on HTTPS');
@@ -28,16 +28,22 @@ class ChatScreen extends React.Component {
         secure: true,
         reconnection: false,
         autoConnect: false,
-        transports: ['websocket']
+        transports: ['websocket'],
       };
     }
 
     let chatSocket = SocketClient('/', settings);
 
     chatSocket.on('connect', () => {
-      console.log('connected');
+      this.props.dispatch(setConnectedStatus(true));
+      console.log(this.props.chat.connectedStatus);
     });
-    chatSocket.on('test', data => {
+
+    chatSocket.on('disconnect', () => {
+      this.props.dispatch(setConnectedStatus(false));
+    });
+
+    chatSocket.on('test', (data) => {
       console.log('Data: ', data);
     });
     chatSocket.connect();
@@ -58,7 +64,13 @@ class ChatScreen extends React.Component {
       setUImessage(currentDate, this.props.auth.username, this.state.value)
     );
   }
+
   render() {
+    const connectedStatus = this.props.chat.connectedStatus;
+
+    if (!connectedStatus) {
+      return <h4>Connecting...</h4>;
+    }
     return (
       <div className="container">
         <div className="window">
@@ -75,10 +87,10 @@ class ChatScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     auth: state.auth,
-    chat: state.chat
+    chat: state.chat,
   };
 };
 

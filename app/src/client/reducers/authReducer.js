@@ -6,7 +6,7 @@ const initialState = {
   userid: '',
   username: '',
   token: '',
-  loggedIn: false
+  loggedIn: false,
 };
 
 export default (state = initialState, action) => {
@@ -25,7 +25,6 @@ export default (state = initialState, action) => {
       updated['token'] = action.token;
       updated['loggedIn'] = true;
       return updated;
-
     default:
       return state;
   }

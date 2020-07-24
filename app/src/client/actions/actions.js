@@ -119,3 +119,24 @@ export const setConnectedStatus = (status) => {
     status: status,
   };
 };
+
+export const setUserList = (users) => {
+  return {
+    type: actionTypes.SET_USER_LIST,
+    users: users,
+  };
+};
+
+export const setUserJoined = (user) => {
+  return {
+    type: actionTypes.SET_USER_JOINED,
+    user: user,
+  };
+};
+
+export const setUserRemoved = (userid) => {
+  return {
+    type: actionTypes.SET_USER_REMOVED,
+    userid: userid,
+  };
+};

@@ -10,8 +10,12 @@
     ]
   },
   "scripts": {
+    "start": "npm-run-all --parallel watch:server watch:build",
+    "watch:build": "webpack --watch",
+    "watch:server": "nodemon \"./dist/index.js\" --watch \"./dist\"",
     "build": "webpack",
-    "start": " nodemon ./src/server/main.js",
+    "dev": " nodemon ./src/server/main.js",
+    "watch": "webpack --watch",
     "test": "mocha --exit --timeout 10000 --recursive ./src/server/tests/integration/"
   },
   "keywords": [],
@@ -36,6 +40,7 @@
     "@babel/preset-react": "^7.10.1",
     "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.6.0",
     "generate-password": "^1.5.1",
     "html-webpack-plugin": "^3.2.0",

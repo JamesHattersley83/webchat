@@ -2,7 +2,13 @@ import React from 'react';
 const SocketClient = require('socket.io-client');
 import './chatScreen.css';
 import { connect } from 'react-redux';
-import { setUImessage, setConnectedStatus } from '../actions/actions';
+import {
+  setUImessage,
+  setConnectedStatus,
+  setUserList,
+  setUserJoined,
+  setUserRemoved,
+} from '../actions/actions';
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -36,16 +42,27 @@ class ChatScreen extends React.Component {
 
     chatSocket.on('connect', () => {
       this.props.dispatch(setConnectedStatus(true));
-      console.log(this.props.chat.connectedStatus);
+      chatSocket.emit('join', this.props.auth.userid, this.props.auth.username);
     });
 
     chatSocket.on('disconnect', () => {
       this.props.dispatch(setConnectedStatus(false));
     });
 
-    chatSocket.on('test', (data) => {
-      console.log('Data: ', data);
+    chatSocket.on('users', (users) => {
+      this.props.dispatch(setUserList(users));
+      console.log('userslist in client', users);
     });
+
+    chatSocket.on('joined', (user) => {
+      console.log('user joined in client', user);
+      this.props.dispatch(setUserJoined(user));
+    });
+
+    chatSocket.on('left', (userid) => {
+      this.props.dispatch(setUserRemoved(userid));
+    });
+
     chatSocket.connect();
   }
 
@@ -57,7 +74,7 @@ class ChatScreen extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  handleSubmit(event) {
+  handleSubmit() {
     console.log(this.state.value);
     const currentDate = new Date();
     this.props.dispatch(

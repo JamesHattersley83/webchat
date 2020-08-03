@@ -1,4 +1,5 @@
 const chatConstants = require('../common/chatConstants');
+const { addNewUser, removeUserByUserID, getUsers } = require('../utils/users');
 
 module.exports = class ChatServer {
   constructor(io) {
@@ -14,19 +15,20 @@ module.exports = class ChatServer {
       // join message event
       socket.on(chatConstants.JOIN, (userid, username) => {
         // send array of connected users back to client
-        console.log('User joined to server');
+        addNewUser(userid, username, socket.id);
+
         socket.emit(chatConstants.USERS, {
-          users: [{ userid: userid, username: username }],
+          users: getUsers(),
         });
+        // send message to all connected users that new user has joined
+        socket.broadcast.emit(chatConstants.JOINED, { userid, username });
       });
 
-      // send message to all connected users that new user has joined
-      socket.broadcast.emit(chatConstants.JOINED, { userid, username });
-
       // send message to all connected users that a user has left
-      socket.on('disconnect', (userid) => {
+      socket.on('disconnect', () => {
         console.log('client disconnected from Chat Server..');
-        socket.broadcast.emit(chatConstants.LEFT, userid);
+        const user = removeUserByUserID(socket.id);
+        socket.broadcast.emit(chatConstants.LEFT, user.userid);
       });
 
       // send chat message to all connected users

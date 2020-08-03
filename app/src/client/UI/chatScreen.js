@@ -51,11 +51,9 @@ class ChatScreen extends React.Component {
 
     chatSocket.on('users', (users) => {
       this.props.dispatch(setUserList(users));
-      console.log('userslist in client', users);
     });
 
     chatSocket.on('joined', (user) => {
-      console.log('user joined in client', user);
       this.props.dispatch(setUserJoined(user));
     });
 

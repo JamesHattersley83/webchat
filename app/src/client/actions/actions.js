@@ -123,20 +123,20 @@ export const setConnectedStatus = (status) => {
 export const setUserList = (users) => {
   return {
     type: actionTypes.SET_USER_LIST,
-    users: users,
+    payload: users,
   };
 };
 
 export const setUserJoined = (user) => {
   return {
     type: actionTypes.SET_USER_JOINED,
-    user: user,
+    payload: user,
   };
 };
 
 export const setUserRemoved = (userid) => {
   return {
     type: actionTypes.SET_USER_REMOVED,
-    userid: userid,
+    payload: userid,
   };
 };

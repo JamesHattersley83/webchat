@@ -7,28 +7,32 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  console.log(action, state);
-  let updated = Object.assign({}, state);
-
   switch (action.type) {
     case actionTypes.SET_UI_MESSAGE:
-      updated['messages'] =
-        updated['messages'] + action.username + ':' + action.message + '\n';
-      return updated;
+      return {
+        ...state,
+        messages: action.username + ':' + action.message + '\n',
+      };
     case actionTypes.SET_CONNECTED_STATUS:
-      updated['connectedStatus'] = action.status;
-      return updated;
+      return {
+        ...state,
+        connectedStatus: action.status,
+      };
     case actionTypes.SET_USER_LIST:
-      updated['users'] = action.users.users;
-      return updated;
+      return {
+        ...state,
+        users: action.payload.users,
+      };
     case actionTypes.SET_USER_JOINED:
-      updated['users'] = updated['users'].push(action.user);
-      return updated;
+      return {
+        ...state,
+        users: [...state.users, action.payload],
+      };
     case actionTypes.SET_USER_REMOVED:
-      updated['users'] = updated['users'].filter(
-        (item) => item !== action.userid
-      );
-      return updated;
+      return {
+        ...state,
+        users: state.users.filter((user) => user.userid !== action.payload),
+      };
     default:
       return state;
   }

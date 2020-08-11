@@ -14,6 +14,7 @@ class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: '' };
+    this.chatSocket = null;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,30 +39,41 @@ class ChatScreen extends React.Component {
       };
     }
 
-    let chatSocket = SocketClient('/', settings);
+    this.chatSocket = SocketClient('/', settings);
 
-    chatSocket.on('connect', () => {
+    this.chatSocket.on('connect', () => {
       this.props.dispatch(setConnectedStatus(true));
-      chatSocket.emit('join', this.props.auth.userid, this.props.auth.username);
+      this.chatSocket.emit(
+        'join',
+        this.props.auth.userid,
+        this.props.auth.username
+      );
     });
 
-    chatSocket.on('disconnect', () => {
+    this.chatSocket.on('disconnect', () => {
       this.props.dispatch(setConnectedStatus(false));
     });
 
-    chatSocket.on('users', (users) => {
+    this.chatSocket.on('users', (users) => {
       this.props.dispatch(setUserList(users));
     });
 
-    chatSocket.on('joined', (user) => {
+    this.chatSocket.on('joined', (user) => {
       this.props.dispatch(setUserJoined(user));
     });
 
-    chatSocket.on('left', (userid) => {
+    this.chatSocket.on('chat', (message) => {
+      const currentDate = new Date();
+      this.props.dispatch(
+        setUImessage(currentDate, message.username, message.content)
+      );
+    });
+
+    this.chatSocket.on('left', (userid) => {
       this.props.dispatch(setUserRemoved(userid));
     });
 
-    chatSocket.connect();
+    this.chatSocket.connect();
   }
 
   componentDidMount() {
@@ -72,12 +84,13 @@ class ChatScreen extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  handleSubmit() {
-    console.log(this.state.value);
-    const currentDate = new Date();
-    this.props.dispatch(
-      setUImessage(currentDate, this.props.auth.username, this.state.value)
-    );
+  handleSubmit(event) {
+    event.preventDefault();
+
+    this.chatSocket.emit('msg', {
+      content: this.state.value,
+    });
+    this.setState({ value: '' });
   }
 
   render() {

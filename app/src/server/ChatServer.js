@@ -1,5 +1,10 @@
 const chatConstants = require('../common/chatConstants');
-const { addNewUser, removeUserByUserID, getUsers } = require('../utils/users');
+const {
+  addNewUser,
+  removeUserByUserID,
+  getUserById,
+  getUsers,
+} = require('../utils/users');
 
 module.exports = class ChatServer {
   constructor(io) {
@@ -33,9 +38,11 @@ module.exports = class ChatServer {
 
       // send chat message to all connected users
       socket.on(chatConstants.MSG, (msg) => {
-        socket.emit('chat', {
-          userid: userid,
-          msg: msg,
+        const user = getUserById(socket.id);
+        const message = msg.content;
+        this.io.emit('chat', {
+          username: user.username,
+          content: message,
           msgTime: new Date().getHours() + ':' + new Date().getMinutes(),
         });
       });

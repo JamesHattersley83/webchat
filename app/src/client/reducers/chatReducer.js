@@ -1,7 +1,7 @@
 import actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  messages: '',
+  messages: [],
   connectedStatus: false,
   users: [],
 };
@@ -11,7 +11,10 @@ export default (state = initialState, action) => {
     case actionTypes.SET_UI_MESSAGE:
       return {
         ...state,
-        messages: action.username + ':' + action.message + '\n',
+        messages: [
+          ...state.messages,
+          action.username + ':' + action.message + '\n',
+        ],
       };
     case actionTypes.SET_CONNECTED_STATUS:
       return {

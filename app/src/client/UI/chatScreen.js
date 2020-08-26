@@ -18,6 +18,8 @@ class ChatScreen extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderChat = this.renderChat.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   initSocket() {
@@ -65,7 +67,7 @@ class ChatScreen extends React.Component {
     this.chatSocket.on('chat', (message) => {
       const currentDate = new Date();
       this.props.dispatch(
-        setUImessage(currentDate, message.username, message.content)
+        setUImessage(currentDate, message.userid, message.content)
       );
     });
 
@@ -84,13 +86,28 @@ class ChatScreen extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-
+  handleSubmit(e) {
     this.chatSocket.emit('msg', {
       content: this.state.value,
     });
     this.setState({ value: '' });
+  }
+
+  handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleSubmit();
+    }
+  }
+
+  renderChat() {
+    const { messages } = this.props.chat;
+    return messages.map((message, index) => (
+      <div key={index}>
+        <span>{message.username}:</span>
+        <span>{message.content}</span>
+      </div>
+    ));
   }
 
   render() {
@@ -102,9 +119,15 @@ class ChatScreen extends React.Component {
     return (
       <div className="container">
         <div className="window">
-          <div className="chats">{this.props.chat.messages}</div>
+          <div className="chats">{this.renderChat()}</div>
           <div className="new-chat">
-            <input type="text" id="message" onChange={this.handleChange} />
+            <input
+              type="text"
+              id="message"
+              onChange={this.handleChange}
+              value={this.state.value}
+              onKeyPress={this.handleKeyPress}
+            />
             <button id="send" onClick={this.handleSubmit}>
               Send
             </button>

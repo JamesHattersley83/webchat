@@ -6,14 +6,25 @@ const initialState = {
   users: [],
 };
 
+const getUsername = (userid, array) => {
+  const aUser = array.find((x) => x.userid === userid);
+  return aUser === undefined ? 'unknown' : aUser.username;
+};
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_UI_MESSAGE:
+      const newUsername = getUsername(action.payload.userid, state.users);
       return {
         ...state,
         messages: [
           ...state.messages,
-          action.username + ':' + action.message + '\n',
+          {
+            username: newUsername,
+            userid: action.payload.userid,
+            content: action.payload.content,
+            msgTime: action.payload.msgTime,
+          },
         ],
       };
     case actionTypes.SET_CONNECTED_STATUS:

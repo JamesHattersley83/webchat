@@ -41,7 +41,7 @@ module.exports = class ChatServer {
         const user = getUserById(socket.id);
         const message = msg.content;
         this.io.emit('chat', {
-          username: user.username,
+          userid: user.userid,
           content: message,
           msgTime: new Date().getHours() + ':' + new Date().getMinutes(),
         });

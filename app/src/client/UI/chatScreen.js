@@ -14,9 +14,12 @@ class ChatScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: '' };
+    this.chatSocket = null;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.renderChat = this.renderChat.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   initSocket() {
@@ -38,30 +41,41 @@ class ChatScreen extends React.Component {
       };
     }
 
-    let chatSocket = SocketClient('/', settings);
+    this.chatSocket = SocketClient('/', settings);
 
-    chatSocket.on('connect', () => {
+    this.chatSocket.on('connect', () => {
       this.props.dispatch(setConnectedStatus(true));
-      chatSocket.emit('join', this.props.auth.userid, this.props.auth.username);
+      this.chatSocket.emit(
+        'join',
+        this.props.auth.userid,
+        this.props.auth.username
+      );
     });
 
-    chatSocket.on('disconnect', () => {
+    this.chatSocket.on('disconnect', () => {
       this.props.dispatch(setConnectedStatus(false));
     });
 
-    chatSocket.on('users', (users) => {
+    this.chatSocket.on('users', (users) => {
       this.props.dispatch(setUserList(users));
     });
 
-    chatSocket.on('joined', (user) => {
+    this.chatSocket.on('joined', (user) => {
       this.props.dispatch(setUserJoined(user));
     });
 
-    chatSocket.on('left', (userid) => {
+    this.chatSocket.on('chat', (message) => {
+      const currentDate = new Date();
+      this.props.dispatch(
+        setUImessage(currentDate, message.userid, message.content)
+      );
+    });
+
+    this.chatSocket.on('left', (userid) => {
       this.props.dispatch(setUserRemoved(userid));
     });
 
-    chatSocket.connect();
+    this.chatSocket.connect();
   }
 
   componentDidMount() {
@@ -72,12 +86,28 @@ class ChatScreen extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  handleSubmit() {
-    console.log(this.state.value);
-    const currentDate = new Date();
-    this.props.dispatch(
-      setUImessage(currentDate, this.props.auth.username, this.state.value)
-    );
+  handleSubmit(e) {
+    this.chatSocket.emit('msg', {
+      content: this.state.value,
+    });
+    this.setState({ value: '' });
+  }
+
+  handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.handleSubmit();
+    }
+  }
+
+  renderChat() {
+    const { messages } = this.props.chat;
+    return messages.map((message, index) => (
+      <div key={index}>
+        <span>{message.username}:</span>
+        <span>{message.content}</span>
+      </div>
+    ));
   }
 
   render() {
@@ -89,9 +119,15 @@ class ChatScreen extends React.Component {
     return (
       <div className="container">
         <div className="window">
-          <div className="chats">{this.props.chat.messages}</div>
+          <div className="chats">{this.renderChat()}</div>
           <div className="new-chat">
-            <input type="text" id="message" onChange={this.handleChange} />
+            <input
+              type="text"
+              id="message"
+              onChange={this.handleChange}
+              value={this.state.value}
+              onKeyPress={this.handleKeyPress}
+            />
             <button id="send" onClick={this.handleSubmit}>
               Send
             </button>

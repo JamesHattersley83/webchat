@@ -5,7 +5,6 @@ const addNewUser = (userid, username, socketID) => {
   const user = { userid, username, socketID };
 
   users.push(user);
-  console.log(users);
 
   return user;
 };
@@ -23,6 +22,11 @@ const getUserByObjectBySocketID = (id) => {
   return users.findIndex((user) => user.socketID === id);
 };
 
+const getUserById = (id) => {
+  const user = users.filter((user) => user.socketID === id);
+  return user[0];
+};
+
 // getUsers
 const getUsers = () => {
   const newUsers = users.map(({ socketID, ...item }) => item);
@@ -32,5 +36,6 @@ const getUsers = () => {
 module.exports = {
   addNewUser,
   removeUserByUserID,
+  getUserById,
   getUsers,
 };

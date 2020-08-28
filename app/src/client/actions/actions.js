@@ -104,12 +104,14 @@ export const loginUser = (username, password) => {
   };
 };
 
-export const setUImessage = (msgTime, username, message) => {
+export const setUImessage = (msgTime, userid, content) => {
   return {
     type: actionTypes.SET_UI_MESSAGE,
-    msgTime: msgTime,
-    username: username,
-    message: message,
+    payload: {
+      msgTime: msgTime,
+      userid: userid,
+      content: content,
+    },
   };
 };
 

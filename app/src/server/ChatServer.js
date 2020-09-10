@@ -49,16 +49,21 @@ module.exports = class ChatServer {
         });
 
         // save message to database
-        connect.then(() => {
-          console.log('connected to mongodb...');
+        try {
+          connect.then(() => {
+            console.log('connected to mongodb...');
 
-          let chatMessage = new Chat({
-            userid: user.userid,
-            message: message,
-            time: message.msgTime,
+            let chatMessage = new Chat({
+              userid: user.userid,
+              message: message,
+              time: message.msgTime,
+            });
+            chatMessage.save();
           });
-          chatMessage.save();
-        });
+        } catch (err) {
+          console.error(err.message);
+          res.status(500).send('Server Error');
+        }
       });
     });
   }

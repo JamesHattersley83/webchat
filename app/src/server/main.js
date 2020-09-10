@@ -4,6 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 const users = require('./routes/users');
+const chat = require('./routes/chat');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', users);
+app.use('/chat/history', chat);
 
 const PORT = process.env.PORT || 4000;
 

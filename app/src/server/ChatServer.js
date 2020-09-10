@@ -1,4 +1,6 @@
 const chatConstants = require('../common/chatConstants');
+const Chat = require('./models/chat');
+const connect = require('./dbconnection');
 const {
   addNewUser,
   removeUserByUserID,
@@ -44,6 +46,18 @@ module.exports = class ChatServer {
           userid: user.userid,
           content: message,
           msgTime: new Date().getHours() + ':' + new Date().getMinutes(),
+        });
+
+        // save message to database
+        connect.then(() => {
+          console.log('connected to mongodb...');
+
+          let chatMessage = new Chat({
+            userid: user.userid,
+            message: message,
+            time: message.msgTime,
+          });
+          chatMessage.save();
         });
       });
     });

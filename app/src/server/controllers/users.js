@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 URL = process.env.URL;
 
 module.exports = {
-  debug: function(req, res, next) {
+  debug: function (req, res, next) {
     console.log(req.userData);
     return res.send('Complete');
   },
@@ -19,16 +19,16 @@ module.exports = {
         body: { username: req.body.username, password: req.body.password },
         json: true,
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       };
 
       request(options)
-        .then(result => {
+        .then((result) => {
           let dataResponse = {
             success: false,
             userid: '',
             username: '',
-            token: ''
+            token: '',
           };
           if (result.statusCode === 201) {
             dataResponse.success = true;
@@ -37,7 +37,7 @@ module.exports = {
             dataResponse.token = jwt.sign(
               {
                 username: result.body.username,
-                userid: result.body.userid
+                userid: result.body.userid,
               },
               process.env.JWTSECRET,
               { expiresIn: '12h' }
@@ -46,7 +46,7 @@ module.exports = {
           res.status(result.statusCode).send(dataResponse);
           resolve();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(err);
           res.status(500).send('Server error...');
           reject();
@@ -62,16 +62,16 @@ module.exports = {
         body: { password: req.body.password },
         json: true,
         resolveWithFullResponse: true,
-        simple: false
+        simple: false,
       };
 
       request(options)
-        .then(result => {
+        .then((result) => {
           let dataResponse = {
             success: false,
             userid: '',
             username: '',
-            token: ''
+            token: '',
           };
           if (result.statusCode === 200) {
             dataResponse.success = true;
@@ -80,7 +80,7 @@ module.exports = {
             dataResponse.token = jwt.sign(
               {
                 username: result.body.username,
-                userid: result.body.userid
+                userid: result.body.userid,
               },
               process.env.JWTSECRET,
               { expiresIn: '12h' }
@@ -89,11 +89,11 @@ module.exports = {
           res.status(result.statusCode).send(dataResponse);
           resolve();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(err);
           res.status(500).send('Server error...');
           reject();
         });
     });
-  }
+  },
 };

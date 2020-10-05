@@ -38,6 +38,7 @@ describe('sockets', () => {
       .send({ username: username, password: password });
     testusername = res.body.username;
     testuserid = res.body.userid;
+    token = res.body.token;
   });
 
   beforeEach((done) => {
@@ -60,7 +61,7 @@ describe('sockets', () => {
     })
       .then((data) => {
         console.log(chatConstants.CONNECTED, data);
-        chatSocket.emit(chatConstants.JOIN, testuserid, testusername);
+        chatSocket.emit(chatConstants.JOIN, testuserid, testusername, token);
       })
       .then(() => {
         return new Promise((resolve) => {
@@ -71,9 +72,46 @@ describe('sockets', () => {
       })
       .then((users) => {
         console.log(chatConstants.USERS, users);
-        expect(user.userid).to.equal(testuserid);
-        expect(user.username).to.equal(testusername);
-        done();
+        expect(users.users[0].userid).to.equal(testuserid);
+        expect(users.users[0].username).to.equal(testusername);
+      });
+  });
+});
+
+describe('socket connection auth', () => {
+  beforeEach((done) => {
+    // create socketio object
+    chatSocket = SocketClient(TEST_URL, settings);
+    chatSocket.on('connect', () => {
+      console.log('socket connected');
+    });
+    done();
+  });
+  afterEach((done) => {
+    done();
+  });
+  it('Should disconnect from the socket connection after sending join message to server without token', () => {
+    return new Promise((resolve) => {
+      chatSocket.on(chatConstants.CONNECTED, (data) => {
+        resolve(data);
+      });
+      chatSocket.connect();
+    })
+      .then(() => {
+        chatSocket.emit(chatConstants.JOIN, '123456', 'random');
+      })
+      .then(() => {
+        return new Promise((resolve) => {
+          chatSocket.on('disconnect', () => {
+            resolve('user is not defined');
+          });
+        });
+      })
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.error(error);
       });
   });
 });

@@ -16,7 +16,8 @@
     "build": "webpack",
     "dev": " nodemon ./src/server/main.js",
     "watch": "webpack --watch",
-    "test": "mocha --exit --timeout 10000 --recursive ./src/server/tests/integration/"
+    "test-all": "mocha --exit --timeout 10000 --recursive ./src/server/tests/integration/",
+    "test": "mocha ./src/server/tests/integration/security.test.js"
   },
   "keywords": [],
   "author": "",

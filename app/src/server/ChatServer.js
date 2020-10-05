@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const chatConstants = require('../common/chatConstants');
 const {
   addNewUser,
@@ -18,7 +19,20 @@ module.exports = class ChatServer {
       socket.emit(chatConstants.CONNECTED, {});
 
       // join message event
-      socket.on(chatConstants.JOIN, (userid, username) => {
+      socket.on(chatConstants.JOIN, (userid, username, token) => {
+        console.log(token);
+        // Verify token
+        if (token) {
+          console.log('token', token);
+          jwt.verify(token, process.env.JWTSECRET, (err) => {
+            if (err) {
+              console.log(err.message);
+            }
+          });
+        } else {
+          socket.disconnect();
+        }
+
         // send array of connected users back to client
         addNewUser(userid, username, socket.id);
 
@@ -33,7 +47,10 @@ module.exports = class ChatServer {
       socket.on('disconnect', () => {
         console.log('client disconnected from Chat Server..');
         const user = removeUserByUserID(socket.id);
-        socket.broadcast.emit(chatConstants.LEFT, user.userid);
+
+        if (user !== undefined || null) {
+          socket.broadcast.emit(chatConstants.LEFT, user.userid);
+        }
       });
 
       // send chat message to all connected users

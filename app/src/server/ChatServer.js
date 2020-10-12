@@ -48,7 +48,7 @@ module.exports = class ChatServer {
         console.log('client disconnected from Chat Server..');
         const user = removeUserByUserID(socket.id);
 
-        if (user !== undefined || null) {
+        if (user !== undefined || user !== null) {
           socket.broadcast.emit(chatConstants.LEFT, user.userid);
         }
       });

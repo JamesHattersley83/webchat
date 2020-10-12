@@ -48,7 +48,8 @@ class ChatScreen extends React.Component {
       this.chatSocket.emit(
         'join',
         this.props.auth.userid,
-        this.props.auth.username
+        this.props.auth.username,
+        this.props.auth.token
       );
     });
 

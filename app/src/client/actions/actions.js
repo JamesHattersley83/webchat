@@ -142,3 +142,25 @@ export const setUserRemoved = (userid) => {
     payload: userid,
   };
 };
+
+export const quitConnection = () => {
+  return (dispatch) => {
+    global.chatSocket.disconnect();
+    dispatch(setConnectedStatus(false))
+  }
+};
+
+export const commandInvoked = (command) => {
+  return (dispatch) => {
+    const cmd = command.match(/[a-z]+\b/)[0];
+
+    switch(cmd) {
+      case 'q':
+        dispatch(quitConnection());
+        break;
+      default:
+        console.log('That is not a valid command')
+    }
+  };
+};
+

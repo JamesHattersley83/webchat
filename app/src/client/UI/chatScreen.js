@@ -1,5 +1,6 @@
 import React from 'react';
 const SocketClient = require('socket.io-client');
+
 import './chatScreen.css';
 import { connect } from 'react-redux';
 import {
@@ -8,6 +9,7 @@ import {
   setUserList,
   setUserJoined,
   setUserRemoved,
+  commandInvoked
 } from '../actions/actions';
 
 class ChatScreen extends React.Component {
@@ -41,11 +43,11 @@ class ChatScreen extends React.Component {
       };
     }
 
-    this.chatSocket = SocketClient('/', settings);
+    global.chatSocket = SocketClient('/', settings);
 
-    this.chatSocket.on('connect', () => {
+    global.chatSocket.on('connect', () => {
       this.props.dispatch(setConnectedStatus(true));
-      this.chatSocket.emit(
+      global.chatSocket.emit(
         'join',
         this.props.auth.userid,
         this.props.auth.username,
@@ -53,30 +55,30 @@ class ChatScreen extends React.Component {
       );
     });
 
-    this.chatSocket.on('disconnect', () => {
+    global.chatSocket.on('disconnect', () => {
       this.props.dispatch(setConnectedStatus(false));
     });
 
-    this.chatSocket.on('users', (users) => {
+    global.chatSocket.on('users', (users) => {
       this.props.dispatch(setUserList(users));
     });
 
-    this.chatSocket.on('joined', (user) => {
+    global.chatSocket.on('joined', (user) => {
       this.props.dispatch(setUserJoined(user));
     });
 
-    this.chatSocket.on('chat', (message) => {
+    global.chatSocket.on('chat', (message) => {
       const currentDate = new Date();
       this.props.dispatch(
         setUImessage(currentDate, message.userid, message.content)
       );
     });
 
-    this.chatSocket.on('left', (userid) => {
+    global.chatSocket.on('left', (userid) => {
       this.props.dispatch(setUserRemoved(userid));
     });
 
-    this.chatSocket.connect();
+    global.chatSocket.connect();
   }
 
   componentDidMount() {
@@ -88,10 +90,16 @@ class ChatScreen extends React.Component {
   }
 
   handleSubmit(e) {
-    this.chatSocket.emit('msg', {
-      content: this.state.value,
-    });
-    this.setState({ value: '' });
+
+    if(this.state.value.startsWith('/')) {
+      this.props.dispatch(commandInvoked(this.state.value));
+      this.setState({ value: '' });
+    } else {
+      global.chatSocket.emit('msg', {
+        content: this.state.value,
+      });
+      this.setState({ value: '' });
+    }
   }
 
   handleKeyPress(event) {

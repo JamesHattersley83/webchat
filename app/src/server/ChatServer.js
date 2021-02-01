@@ -22,10 +22,8 @@ module.exports = class ChatServer {
 
       // join message event
       socket.on(chatConstants.JOIN, (userid, username, token) => {
-        console.log(token);
         // Verify token
         if (token) {
-          console.log('token', token);
           jwt.verify(token, process.env.JWTSECRET, (err) => {
             if (err) {
               console.log(err.message);
@@ -54,6 +52,13 @@ module.exports = class ChatServer {
           socket.broadcast.emit(chatConstants.LEFT, user.userid);
         }
       });
+
+      // send private chat to user using socketID
+      socket.on('private', (data) => {
+        console.log(data);
+        const user = data.to;
+        const message = data.message;
+      })  
 
       // send chat message to all connected users
       socket.on(chatConstants.MSG, (msg) => {

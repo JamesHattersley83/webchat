@@ -3,7 +3,6 @@ const users = [];
 // addNewUser
 const addNewUser = (userid, username, socketID) => {
   const user = { userid, username, socketID };
-
   users.push(user);
 
   return user;

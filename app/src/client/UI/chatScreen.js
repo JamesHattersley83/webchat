@@ -78,6 +78,11 @@ class ChatScreen extends React.Component {
       this.props.dispatch(setUserRemoved(userid));
     });
 
+    // private message
+    global.chatSocket.on('private', (data) => {
+      console.log(data)
+    })
+
     global.chatSocket.connect();
   }
 
@@ -92,7 +97,7 @@ class ChatScreen extends React.Component {
   handleSubmit(e) {
 
     if(this.state.value.startsWith('/')) {
-      this.props.dispatch(commandInvoked(this.state.value));
+      this.props.dispatch(commandInvoked(this.state.value, this.props.chat.users));
       this.setState({ value: '' });
     } else {
       global.chatSocket.emit('msg', {

@@ -7,5 +7,5 @@ Real Time Web Chat Application built using Node, Express, React, Redux, MySQL, M
 npm install
 npm run dev
 
-Go to localhost:3000
+Go to localhost:4000
 ```

@@ -32,9 +32,16 @@ const getUsers = () => {
   return newUsers;
 };
 
+// get user by userid
+const getUserbyUserid = (userid) => {
+  const user = users.filter((user) => user.userid === userid);
+  return user[0];
+}
+
 module.exports = {
   addNewUser,
   removeUserByUserID,
   getUserById,
   getUsers,
+  getUserbyUserid
 };

@@ -81,6 +81,10 @@ class ChatScreen extends React.Component {
     // private message
     global.chatSocket.on('private', (data) => {
       console.log(data)
+      const currentDate = new Date();
+      this.props.dispatch(
+        setUImessage(currentDate, data.from, data.message)
+      );
     })
 
     global.chatSocket.connect();

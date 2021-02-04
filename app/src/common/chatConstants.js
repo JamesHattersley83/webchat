@@ -4,5 +4,6 @@ module.exports = {
   USERS: 'users',
   JOINED: 'joined',
   LEFT: 'left',
-  MSG: 'msg'
+  MSG: 'msg',
+  PRIVATE: 'private'
 };

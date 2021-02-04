@@ -3,7 +3,6 @@ const users = [];
 // addNewUser
 const addNewUser = (userid, username, socketID) => {
   const user = { userid, username, socketID };
-
   users.push(user);
 
   return user;
@@ -33,9 +32,16 @@ const getUsers = () => {
   return newUsers;
 };
 
+// get user by userid
+const getUserbyUserid = (userid) => {
+  const user = users.filter((user) => user.userid === userid);
+  return user[0];
+}
+
 module.exports = {
   addNewUser,
   removeUserByUserID,
   getUserById,
   getUsers,
+  getUserbyUserid
 };

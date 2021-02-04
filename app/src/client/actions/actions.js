@@ -90,7 +90,6 @@ export const loginUser = (username, password) => {
         if (data.success) {
           // Success
           dispatch(userLoggedIn(data.username, data.userid, data.token));
-          console.log(data);
         } else {
           // Server did not return success = true
           dispatch(setLoginStatus('Error Logging in user..'));
@@ -150,13 +149,20 @@ export const quitConnection = () => {
   }
 };
 
-export const commandInvoked = (command) => {
+export const commandInvoked = (command, users) => {
   return (dispatch) => {
+    console.log(users)
     const cmd = command.match(/[a-z]+\b/)[0];
-
+    const arg = command.substr(cmd.length+2, command.length);
     switch(cmd) {
       case 'q':
         dispatch(quitConnection());
+        break;
+      case 'dm':
+        const to = arg.match(/[a-z]+\b/)[0];
+        const message = arg.substr(to.length , arg.length);
+        const user = users.find(item => item.username === to)
+        global.chatSocket.emit('private', {to: user.userid, msg: message})
         break;
       default:
         console.log('That is not a valid command')

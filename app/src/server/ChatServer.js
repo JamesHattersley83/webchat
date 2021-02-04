@@ -7,6 +7,7 @@ const {
   removeUserByUserID,
   getUserById,
   getUsers,
+  getUserbyUserid
 } = require('../utils/users');
 
 module.exports = class ChatServer {
@@ -22,10 +23,8 @@ module.exports = class ChatServer {
 
       // join message event
       socket.on(chatConstants.JOIN, (userid, username, token) => {
-        console.log(token);
         // Verify token
         if (token) {
-          console.log('token', token);
           jwt.verify(token, process.env.JWTSECRET, (err) => {
             if (err) {
               console.log(err.message);
@@ -54,6 +53,20 @@ module.exports = class ChatServer {
           socket.broadcast.emit(chatConstants.LEFT, user.userid);
         }
       });
+
+      // send private chat to user using socketID
+      socket.on(chatConstants.PRIVATE, (data) => {
+        const from = getUserById(socket.id)
+        const to = getUserbyUserid(data.to)
+        const message = data.msg;
+        console.log('from:',from);
+        console.log('to:',to.socketID);
+        console.log('msg:', message);
+        this.io.to(to.socketID).emit('private', {
+          from: from.userid,
+          message: message
+        });
+      })  
 
       // send chat message to all connected users
       socket.on(chatConstants.MSG, (msg) => {

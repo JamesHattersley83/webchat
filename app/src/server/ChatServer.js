@@ -55,7 +55,7 @@ module.exports = class ChatServer {
       });
 
       // send private chat to user using socketID
-      socket.on('private', (data) => {
+      socket.on(chatConstants.PRIVATE, (data) => {
         const from = getUserById(socket.id)
         const to = getUserbyUserid(data.to)
         const message = data.msg;

@@ -68,9 +68,11 @@ class ChatScreen extends React.Component {
     });
 
     global.chatSocket.on('chat', (message) => {
+      console.log('chat message', message)
+      const type = 'chat';
       const currentDate = new Date();
       this.props.dispatch(
-        setUImessage(currentDate, message.userid, message.content)
+        setUImessage(currentDate, message.userid, message.content, type)
       );
     });
 
@@ -80,10 +82,11 @@ class ChatScreen extends React.Component {
 
     // private message
     global.chatSocket.on('private', (data) => {
-      console.log(data)
+      console.log('private message', data)
+      const type = 'private';
       const currentDate = new Date();
       this.props.dispatch(
-        setUImessage(currentDate, data.from, data.message)
+        setUImessage(currentDate, data.from, data.message, type)
       );
     })
 
@@ -123,7 +126,7 @@ class ChatScreen extends React.Component {
     return messages.map((message, index) => (
       <div key={index}>
         <span>{message.username}:</span>
-        <span>{message.content}</span>
+        <span style={{fontStyle: message.type === "private" ? 'italic': 'chat'}}>{message.content}</span>
       </div>
     ));
   }

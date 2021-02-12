@@ -24,6 +24,7 @@ export default (state = initialState, action) => {
             userid: action.payload.userid,
             content: action.payload.content,
             msgTime: action.payload.msgTime,
+            type: action.payload.type
           },
         ],
       };

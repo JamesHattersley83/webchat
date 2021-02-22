@@ -1,4 +1,5 @@
 import React from 'react';
+
 const SocketClient = require('socket.io-client');
 
 import './chatScreen.css';
@@ -11,6 +12,7 @@ import {
   setUserRemoved,
   commandInvoked
 } from '../actions/actions';
+
 
 class ChatScreen extends React.Component {
   constructor(props) {
@@ -124,10 +126,19 @@ class ChatScreen extends React.Component {
   renderChat() {
     const { messages } = this.props.chat;
     return messages.map((message, index) => (
-      <div key={index}>
-        <span>{message.username}:</span>
+      <div className="chat-message" key={index}>
+        <span>{message.username}: </span>
         <span style={{fontStyle: message.type === "private" ? 'italic': 'chat'}}>{message.content}</span>
       </div>
+    ));
+  }
+
+  renderUserList() {
+    const { users } = this.props.chat;
+    return users.map((user, index) => (
+        <div key={index}>
+          <span>{user.username}</span>
+        </div>
     ));
   }
 
@@ -140,6 +151,10 @@ class ChatScreen extends React.Component {
     return (
       <div className="container">
         <div className="window">
+          <div className="side-bar">
+          <h3><i class="fas fa-users"></i> Users</h3>
+          {this.renderUserList()}
+          </div>
           <div className="chats">{this.renderChat()}</div>
           <div className="new-chat">
             <input
@@ -149,7 +164,7 @@ class ChatScreen extends React.Component {
               value={this.state.value}
               onKeyPress={this.handleKeyPress}
             />
-            <button id="send" onClick={this.handleSubmit}>
+            <button className="btn" id="send" onClick={this.handleSubmit}>
               Send
             </button>
           </div>

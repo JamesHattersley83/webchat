@@ -1,4 +1,5 @@
 import React from 'react';
+import './chatScreen.css';
 import { connect } from 'react-redux';
 import { setRegisterStatus, registerNewUser } from '../actions/actions';
 
@@ -34,7 +35,9 @@ class Registration extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="auth-container">
+        <div className="auth-main">
+        <div className="form-control">
         <form onSubmit={this.register}>
           {this.props.auth.regStatus}
           <h3>Register</h3>
@@ -42,12 +45,16 @@ class Registration extends React.Component {
             Username:
             <input type="text" id="username" onChange={this.handleChange} />
           </label>
+          </form>
+          </div>
+          <div className="form-control">
           <label>
             Password:
             <input type="password" id="password" onChange={this.handleChange} />
           </label>
-          <input type="submit" value="Submit" />
-        </form>
+          <input className="btn" type="submit" value="Submit" />
+          </div>
+        </div>
       </div>
     );
   }

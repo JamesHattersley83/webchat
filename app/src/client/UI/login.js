@@ -1,4 +1,5 @@
 import React from 'react';
+import './chatScreen.css';
 import { connect } from 'react-redux';
 import { setLoginStatus, loginUser } from '../actions/actions';
 
@@ -32,20 +33,26 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="auth-container">
+        <div className="auth-main">
         <form onSubmit={this.login}>
+          <div className="form-control">
           {this.props.auth.logStatus}
           <h3>Login</h3>
           <label>
             Username:
             <input type="text" id="username" onChange={this.handleChange} />
           </label>
+          </div>
+          <div className="form-control">
           <label>
             Password:
             <input type="password" id="password" onChange={this.handleChange} />
           </label>
-          <input type="submit" value="Submit" />
+          <input className="btn" type="submit" value="Submit" />
+          </div>
         </form>
+        </div>
       </div>
     );
   }

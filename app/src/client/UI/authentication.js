@@ -1,6 +1,7 @@
 import React from 'react';
 import Registration from './registration';
 import Login from './login';
+import './chatscreen.css';
 
 class Authentication extends React.Component {
   constructor(props) {
@@ -21,8 +22,8 @@ class Authentication extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={() => this.toggleScreen('register')}>Register</button>
-        <button onClick={() => this.toggleScreen('login')}>Login</button>
+        <button className="btn" onClick={() => this.toggleScreen('register')}>Register</button>
+        <button className="btn" onClick={() => this.toggleScreen('login')}>Login</button>
         {this.state.screen == 'login' ? <Login /> : <Registration />}
       </div>
     );

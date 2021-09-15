@@ -19,7 +19,6 @@ module.exports = class ChatServer {
     // run when client connects
     this.io.on('connection', (socket) => {
       console.log('New client connected to Chat Server..');
-      socket.emit(chatConstants.CONNECTED, {});
 
       // join message event
       socket.on(chatConstants.JOIN, (userid, username, token) => {

@@ -57,6 +57,10 @@ class ChatScreen extends React.Component {
       );
     });
 
+    global.chatSocket.on('connected', (data) => {
+      console.log(data)
+    })
+
     global.chatSocket.on('disconnect', () => {
       this.props.dispatch(setConnectedStatus(false));
     });
@@ -66,6 +70,7 @@ class ChatScreen extends React.Component {
     });
 
     global.chatSocket.on('joined', (user) => {
+      console.log(user)
       this.props.dispatch(setUserJoined(user));
     });
 
@@ -152,7 +157,7 @@ class ChatScreen extends React.Component {
       <div className="container">
         <div className="window">
           <div className="side-bar">
-          <h3><i class="fas fa-users"></i> Users</h3>
+          <h3><i className="fas fa-users"></i> Users</h3>
           {this.renderUserList()}
           </div>
           <div className="chats">{this.renderChat()}</div>
